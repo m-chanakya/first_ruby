@@ -29,6 +29,13 @@ class UsersController < ApplicationController
     end
   end
   
+  def delete
+    user = User.find(session[:user_id])
+    session[:user_id] = nil
+    user.delete
+    redirect_to root_url, :notice => "User Deleted!"
+  end
+  
   private
   
   def user_params

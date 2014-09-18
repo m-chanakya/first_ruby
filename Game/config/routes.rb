@@ -6,7 +6,8 @@ Rails.application.routes.draw do
   get "login" => "sessions#new", :as => "login"
   get "logout" => "sessions#destroy", :as => "logout"
   get "signup" => "users#new", :as => "signup"
-  
+  get "delete" => "users#delete", :as => "delete"
+
   resources :users
   resources :sessions
   resource :profile
