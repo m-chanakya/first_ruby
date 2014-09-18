@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_filter :authenticate_user, :only => [:update]
+  before_filter :authenticate_user, :only => [:edit, :update]
   before_filter :save_login_state, :only => [:new, :create]
   
   def new
@@ -15,16 +15,17 @@ class UsersController < ApplicationController
     end
   end
   
+  def edit
+    @user = User.find(session[:user_id])
+  end
+
   def update
-    user = User.authenticate(params[:email], params[:old_password])
-    if user
-      user.name = params[:user]
-      user.username = params[:username]
-      user.password = params[:new_password]
-      flash[:success] = "Profile updated"
-      render "sessions/home"
+    @user = User.find(session[:user_id])
+    if @user.update_attributes(user_params)
+      flash[:success] = "Account updated"
+      redirect_to home_url
     else
-      render "update"
+      render 'edit'
     end
   end
   
