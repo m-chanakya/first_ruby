@@ -8,15 +8,18 @@ class UsersController < ApplicationController
   end
   
   def admin_user_update
-    flash[:success] = "UPDATE WORKING"
     user = User.find_by email: params[:email]
-    if user.update_attributes(user_params)
+    user.name = params[:name]
+    user.email = params[:email]
+    user.username = params[:username]
+    if user.save
       flash[:success] = "Account updated"
     end
+    redirect_to :action => "admin_page"
   end
   
   def admin_user_delete
-    user = User.find_by email: params[:email]
+    user = User.find_by username: params[:username]
     user.delete
     flash[:success] = "User deleted"
   end

@@ -1,0 +1,11 @@
+<div id="mainImgBlock">
+  <div><%= image_tag(@img1, :alt => "Error") %></div><!--
+  --><div><%= image_tag(@img2, :alt => "Error") %></div><!--
+  --><div><%= image_tag(@img3, :alt => "Error") %></div><!--
+  --><div><%= image_tag(@img4, :alt => "Error") %></div>
+</div>
+<%=form_tag({controller: "sessions", action: "checkAns"}, method: "post") %>
+  Input :<%= text_field_tag "ans"%><br/>
+  <%= submit_tag("Submit")%>
+<h2 id="score"><%=session["score"]%></h2>
+

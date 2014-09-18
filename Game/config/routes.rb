@@ -9,7 +9,11 @@ Rails.application.routes.draw do
   get "delete" => "users#delete", :as => "delete"
   get "admin_page" => "users#admin_page", :as => "admin_page"
   post "admin_user_delete" => "users#admin_user_delete", :as => "admin_user_delete"
-  post "admin_user_update" => "users#admin_user_update", :as => "admin_user_update"
+  get "admin_user_update" => "users#admin_user_update", :as => "admin_user_update"
+  post "sessions/play"
+  get "sessions/play"
+  post "sessions/checkAns"
+  get "sessions/checkAns"
   
   resources :users
   resources :sessions

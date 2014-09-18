@@ -23,16 +23,40 @@ class SessionsController < ApplicationController
     session[:user_id] = nil
     redirect_to root_url, :notice => "Logged Out!!"
   end
-
-  def getRandImg
-    n = Photo.count
-    xx = rand(n+1)
-    x = Photo.find_by id: xx
-    @tag = xx['tags']
-    return x["files"].split(',')
+  
+  def checkAns
+    if Photos.chk(params["ans"])
+      session[:score] = session[:score] + 3;
+      @checker = true
+    else
+      session[:score] = session[:score] - 1;
+      @checker = false
+    end
+    redirect_to :action => "play"
   end
   
   def play
-    
+    if session[:score ] == nil
+      session[:score] = 0
+    end
+    if @checker == true or @checker==nil
+      tmp = Photos.getRandImg
+      sz = tmp.size
+      @img1 = tmp[rand(sz)]
+      @img2 = tmp[rand(sz)]
+      @img3 = tmp[rand(sz)]
+      @img4 = tmp[rand(sz)]
+      while @img1 == @img2
+        @img2 = tmp[rand(sz)]
+      end
+      while @img3 == @img2 or @img3 == @img1
+        @img3 = tmp[rand(sz)]
+      end
+      while @img4 == @img3 or @img4 == @img2 or @img4 == @img1
+        @img4 = tmp[rand(sz)]
+      end
+      @checker = false
+    end
   end
+  
 end
