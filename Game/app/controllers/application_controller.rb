@@ -30,4 +30,15 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  def authorized?
+    user = User.find(session[:user_id])
+    if user.email == "admin@gmail.com" and user.username = "Admin"
+      return true
+    else
+      flash[:error] = "You are not authorized to view that page."
+      redirect_to root_path
+      return false
+    end
+  end
+  
 end

@@ -7,7 +7,10 @@ Rails.application.routes.draw do
   get "logout" => "sessions#destroy", :as => "logout"
   get "signup" => "users#new", :as => "signup"
   get "delete" => "users#delete", :as => "delete"
-
+  get "admin_page" => "users#admin_page", :as => "admin_page"
+  post "admin_user_delete" => "users#admin_user_delete", :as => "admin_user_delete"
+  post "admin_user_update" => "users#admin_user_update", :as => "admin_user_update"
+  
   resources :users
   resources :sessions
   resource :profile

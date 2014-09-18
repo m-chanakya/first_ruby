@@ -23,5 +23,16 @@ class SessionsController < ApplicationController
     session[:user_id] = nil
     redirect_to root_url, :notice => "Logged Out!!"
   end
+
+  def getRandImg
+    n = Photo.count
+    xx = rand(n+1)
+    x = Photo.find_by id: xx
+    @tag = xx['tags']
+    return x["files"].split(',')
+  end
   
+  def play
+    
+  end
 end

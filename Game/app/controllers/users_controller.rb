@@ -1,6 +1,25 @@
 class UsersController < ApplicationController
-  before_filter :authenticate_user, :only => [:edit, :update]
+  before_filter :authenticate_user, :only => [:edit, :update, :admin_page, :admin_user_update, :admin_user_delete]
   before_filter :save_login_state, :only => [:new, :create]
+  before_filter :authorized?, :only => [:admin_page, :admin_user_update, :admin_user_delete]
+  
+  def admin_page
+    @user_all = User.all
+  end
+  
+  def admin_user_update
+    flash[:success] = "UPDATE WORKING"
+    user = User.find_by email: params[:email]
+    if user.update_attributes(user_params)
+      flash[:success] = "Account updated"
+    end
+  end
+  
+  def admin_user_delete
+    user = User.find_by email: params[:email]
+    user.delete
+    flash[:success] = "User deleted"
+  end
   
   def new
     @user = User.new
@@ -37,7 +56,6 @@ class UsersController < ApplicationController
   end
   
   private
-  
   def user_params
     params.require(:user).permit(:name, :username, :email, :password)
   end
