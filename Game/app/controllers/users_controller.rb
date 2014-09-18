@@ -1,4 +1,7 @@
 class UsersController < ApplicationController
+  before_filter :authenticate_user, :only => [:update]
+  before_filter :save_login_state, :only => [:new, :create]
+  
   def new
     @user = User.new
   end
@@ -9,6 +12,19 @@ class UsersController < ApplicationController
       redirect_to root_url, :notice => "Signed up!"
     else
       render "new"
+    end
+  end
+  
+  def update
+    user = User.authenticate(params[:email], params[:old_password])
+    if user
+      user.name = params[:user]
+      user.username = params[:username]
+      user.password = params[:new_password]
+      flash[:success] = "Profile updated"
+      render "sessions/home"
+    else
+      render "update"
     end
   end
   

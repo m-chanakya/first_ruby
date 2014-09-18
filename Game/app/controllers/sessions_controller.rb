@@ -1,4 +1,7 @@
 class SessionsController < ApplicationController
+  before_filter :authenticate_user, :only => [:home]
+  before_filter :save_login_state, :only => [:create, :new]
+  
   def new
   end
   
@@ -13,9 +16,12 @@ class SessionsController < ApplicationController
     end
   end
   
+  def home
+  end
+  
   def destroy
-    sessions[:user_id] = nil
-    redirect root_url, :notice => "Logged Out!!"
+    session[:user_id] = nil
+    redirect_to root_url, :notice => "Logged Out!!"
   end
   
 end
