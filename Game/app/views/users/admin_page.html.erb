@@ -23,20 +23,32 @@
     </tr> 
   <% end %>
 </table>
-<form id="update-form"></form>
-<button id="add">Add User</button>
-<button id="edit">Edit</button>
-<button type="submit" form="form" id="submit" disabled="disabled">Submit</button>
-<button id="cancel" disabled="disabled">Cancel</button>
-<button id="delete">Delete User</button>
-<form id="form" action="/admin_user_update" method="">
+<form id="update-form" action="/admin_user_update" method="get">
+<input type="hidden" name="original-username">
 <input type="hidden" name="name">
 <input type="hidden" name="email">
 <input type="hidden" name="username">
+<input type="password" name="password" id="password" placeholder="Enter New Password" disabled>
+</form>
+<button id="add">Add User</button>
+<button id="edit">Edit</button>
+<button type="submit" form="update-form" id="submit" disabled="disabled">Submit</button>
+<button id="cancel" disabled="disabled">Cancel</button>
+<button id="delete" type="submit" form="delete-form"> Delete User</button>
+<form id="delete-form" method="get" action="/admin_user_delete">
+<input type="hidden" name="username" id="user-to-delete">
+</form>
+<form id="add-form" method="post" action="" style="display:none;">
+  <input type="email" placeholder="Email" name="email">
+  <input type="text" placeholder="Username" name="username">
+  <input type="text" placeholder="Name" name="name">
+  <input type="password" placeholder="Password" name="password">
+  <input type="submit">
 </form>
 <script>
   var current = new Array();
   $(function(){
+    
     $('#edit').click(function(){
       var r = $('.user-radio:checked');
       if (r.length == 0) {
@@ -52,8 +64,10 @@
           ctd = ctd.next();
         }
         $('.user-radio').attr('disabled','');
+        $('#password').removeAttr('disabled');
       }
     });
+    
     $('#cancel').click(function(){
       $('.user-radio').removeAttr('disabled');
       $('#edit').removeAttr('disabled');
@@ -63,12 +77,31 @@
         $(this).html(current.shift()).removeAttr('contentEditable').removeClass('editable');
       });
     });
+    
     $('#form').on('submit',function(){
       $('.editable').each(function(){
         var v = $(this).data('name');
         $('input[name='+v+']').val($(this).text());
         console.log(v, $('input[name='+v+']').val());
       });
+      alert($('input[type=radio]:checked').data('username'));
+      $('input[name=original-username]').val($('input[type=radio]:checked').data('username'));
     });
+    
+    $('#delete-form').on('submit', function(){
+      var r = $('.user-radio:checked');
+      if (r.length == 0) {
+        alert('None selected');
+        return false;
+      }
+      else {
+        $('#user-to-delete').val( $('input[type=radio]:checked').data('username') );
+      }
+    });
+    
+    $('#add').click(function(){
+      $('#add-form').show();
+    });
+    
   });
 </script>

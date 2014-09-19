@@ -1,18 +1,26 @@
 <h1>lola <%=params["level"]%></h1>
-
-<div id="mainImgBlock">
-  <div><%= image_tag(session["img1"], :alt => "Error") %></div><!--
-  --><div><%= image_tag(session["img2"], :alt => "Error") %></div><!--
-  --><div><%= image_tag(session["img3"], :alt => "Error") %></div><!--
-  --><div><%= image_tag(session["img4"], :alt => "Error") %></div>
+<div id="mainImgBlock" style="display: inline-block; width:20">
+  <div><%= image_tag(session["img1"], :alt => "Error", height: '100', width: '100') %></div><!--
+  --><div><%= image_tag(session["img2"], :alt => "Error", height: '100', width: '100') %></div><!--
+  --><div><%= image_tag(session["img3"], :alt => "Error", height: '100', width: '100') %></div><!--
+  --><div><%= image_tag(session["img4"], :alt => "Error", height: '100', width: '100') %></div>
 </div>
 <%=form_tag({controller: "sessions", action: "checkAns"}, method: "post") %>
   Input :<%= text_field_tag "ans"%><br/>
   <%= submit_tag("Submit")%>
 <h2 id="score"><%=session["score"]%></h2>
 <h2 id="timer"><%=@timer%></h2>
-
+  
 <script>
   t = parseInt(<%=@timer%>);
-  setInterval(function(){console.log('akjfhsdkjfh', t); $("#timer").html(t); t--;},1000);
+  inter = setInterval(function(){
+    $("#timer").html(t);
+    t--;
+    if(t<=0)
+    {
+      window.location = '/sessions/endGame';
+      clearInterval(inter);
+    }
+  },1000);
+  
 </script>

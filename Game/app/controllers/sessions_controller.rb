@@ -9,7 +9,11 @@ class SessionsController < ApplicationController
     user = User.authenticate(params[:email], params[:password])
     if user
       session[:user_id] = user.id
-      redirect_to root_url, :notice => "Logged In!!"
+      if :authorized?
+        redirect_to admin_page_url, :notice => "Logged In as Admin!!"
+      else
+        redirect_to root_url, :notice => "Logged In!!"
+      end
     else
       flash.now.alert = "Invalid email or password"
       render "new"
@@ -21,11 +25,12 @@ class SessionsController < ApplicationController
   
   def destroy
     session[:user_id] = nil
+    reset_session
     redirect_to root_url, :notice => "Logged Out!!"
   end
     
   def play
-    @timer = 10
+    @timer = 20 - ((params["level"].to_i) - 1)*5
     if session["checker"] == nil
       session["checker"] = 1
     end
@@ -39,7 +44,7 @@ class SessionsController < ApplicationController
       session["img2"] = tmp[rand(sz)]
       session["img3"] = tmp[rand(sz)]
       session["img4"] = tmp[rand(sz)]
-      while session["img1"] == session["img2"]
+      while session["img1"]== session["img2"]
         session["img2"] = tmp[rand(sz)]
       end
       while session["img3"] == session["img2"] or session["img3"] == session["img1"]
@@ -62,6 +67,10 @@ class SessionsController < ApplicationController
       session["checker"] = 0
     end
     redirect_to :action => "play"
+  end
+  
+  def endGame
+    redirect_to root_url, :notice => "Game Over!!"
   end
   
 end

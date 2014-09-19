@@ -14,7 +14,8 @@ Rails.application.routes.draw do
   get "sessions/play"
   post "sessions/checkAns"
   get "sessions/checkAns"
-  
+  post "sessions/endGame"
+  get "sessions/endGame"
   resources :users
   resources :sessions
   resource :profile
