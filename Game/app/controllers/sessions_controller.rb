@@ -9,11 +9,7 @@ class SessionsController < ApplicationController
     user = User.authenticate(params[:email], params[:password])
     if user
       session[:user_id] = user.id
-      if :authorized?
-        redirect_to admin_page_url, :notice => "Logged In as Admin!!"
-      else
-        redirect_to root_url, :notice => "Logged In!!"
-      end
+      redirect_to home_url, :notice => "Logged In!!"
     else
       flash.now.alert = "Invalid email or password"
       render "new"
@@ -26,7 +22,7 @@ class SessionsController < ApplicationController
   def destroy
     session[:user_id] = nil
     reset_session
-    redirect_to root_url, :notice => "Logged Out!!"
+    redirect_to login_url, :notice => "Logged Out!!"
   end
     
   def play
@@ -38,12 +34,17 @@ class SessionsController < ApplicationController
       session[:score] = 0
     end
     if session["checker"] == 1
-      tmp = Photos.getRandImg
-      sz = tmp.size
-      session["img1"] = tmp[rand(sz)]
-      session["img2"] = tmp[rand(sz)]
-      session["img3"] = tmp[rand(sz)]
-      session["img4"] = tmp[rand(sz)]
+      while true
+        tmp = Photos.getRandImg
+        sz = tmp.size
+        session["img1"] = tmp[rand(sz)]
+        session["img2"] = tmp[rand(sz)]
+        session["img3"] = tmp[rand(sz)]
+        session["img4"] = tmp[rand(sz)]
+        if sz>=4
+          break
+        end
+      end
       while session["img1"]== session["img2"]
         session["img2"] = tmp[rand(sz)]
       end

@@ -1,5 +1,28 @@
-<h1>Sign Up</h1>
-
+<style>
+  .outer {
+    position:absolute;
+    top:4.5em;
+    bottom:0;
+    left:0;
+    right:0;
+    text-align:center;
+  }
+  .outer:before {
+    content:"";
+    display:inline-block;
+    height:100%;
+    vertical-align:middle;
+  }
+  .inner {
+    display:inline-block;
+    vertical-align:middle;
+    background-color:rgba(200,175,150,0.75);
+    padding:50px;
+  }
+</style>
+<div class="outer">
+<div class="inner">
+<h1 class="page-header">Sign Up</h1>
 <%= form_for @user do |f| %>
   <% if @user.errors.any? %>
     <div class="error_messages">
@@ -28,5 +51,12 @@
     <%= f.label :password %>
     <%= f.password_field :password %>
   </p>
-<p class="button"><%= f.submit "Create" %></p>
+<p class="button"><%= f.submit "Sign Up" %></p>
 <% end %>
+</div>
+</div>
+<script>
+  $(function(){
+    $('input[type=submit]').addClass('btn').addClass('btn-primary');
+  });
+</script>

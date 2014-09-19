@@ -1,17 +1,123 @@
-<h1>lola <%=params["level"]%></h1>
-<div id="mainImgBlock" style="display: inline-block; width:20">
-  <div><%= image_tag(session["img1"], :alt => "Error", height: '100', width: '100') %></div><!--
+<style>
+#mainImgBlock {
+  text-align:center;
+}
+#mainImgBlock > div {
+  display: inline-block;
+  width:50%;
+}
+#mainImgBlock > div > div {
+  display: inline-block;
+  width:50%;
+}
+#mainImgBlock > div > div >img {
+  width: 100%;
+}
+.circle {
+  display: inline-block;
+  font-size:2em;
+  width:5em;
+  height: 5em;
+  line-height: 5em;
+  text-align: center;
+  transform: rotate(-30deg);
+  border-radius: 100%;
+  background-color: rgba(150,100,75,0.5);
+  user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  -webkit-user-select:none;
+  white-space:no-wrap;
+}
+#level {
+  top:0em;
+}
+#score {
+  top:6em;
+}
+#timer {
+  top:10em;
+}
+#timer:before {
+  content:"Timer ";
+}
+#data-wrapper {
+  float:left;
+  width:6em;
+}
+#form-wrapper {
+  background-color: rgba(150,100,75,0.5);
+  display:inline-block;
+  padding:0 10px;
+  margin: 20px auto;
+  color:white;
+  text-shadow:0 1px 1px black;
+  border-radius:100%;
+  padding-top:10px;
+  font-size:1.3em;
+}
+
+#container-for-form-wrapper {
+  text-align:center;
+}
+#form-wrapper:before {
+  content:"";
+  display:inline-block;
+  height:100%;
+  vertical-align:middle;
+}
+form, input {
+  display:inline-block;
+}
+input {
+  vertical-align:middle;
+}
+span {
+  display:inline-block;
+  vertical-align:middle;
+}
+</style>
+<div id="data-wrapper">
+<div id="level" class="circle">Level <%=params["level"]%> </div>
+<div id="score" class="circle">Score <%=session["score"]%></div>
+<div id="timer" class="circle"> <%=@timer%></div>
+</div>
+<div id="mainImgBlock">
+  <div>
+    <table>
+      <% @lBoard.each do |t|%>
+      <tr>
+        <td><%= t.uname %></td>
+        <td><%= t.score %></td>
+      </tr>
+      <%end%>
+    </table>
+  </div>
+  <div><!--
+  --><div><%= image_tag(session["img1"], :alt => "Error", height: '100', width: '100') %></div><!--
   --><div><%= image_tag(session["img2"], :alt => "Error", height: '100', width: '100') %></div><!--
   --><div><%= image_tag(session["img3"], :alt => "Error", height: '100', width: '100') %></div><!--
-  --><div><%= image_tag(session["img4"], :alt => "Error", height: '100', width: '100') %></div>
+  --><div><%= image_tag(session["img4"], :alt => "Error", height: '100', width: '100') %></div><!--
+--></div>
 </div>
+<div id="container-for-form-wrapper">
+<div id="form-wrapper">
 <%=form_tag({controller: "sessions", action: "checkAns"}, method: "post") %>
-  Input :<%= text_field_tag "ans"%><br/>
+  <span>
+  <%= text_field_tag "ans"%><br>
   <%= submit_tag("Submit")%>
-<h2 id="score"><%=session["score"]%></h2>
-<h2 id="timer"><%=@timer%></h2>
-  
+  </span>
+</div>
+</div>
 <script>
+  $(function(){
+    $('#form-wrapper input[type=text]').attr({
+      'placeholder':'Answer',
+    });
+    $('#form-wrapper').css({
+      'height':$('#form-wrapper').width()+'px'
+    });
+  });
   t = parseInt(<%=@timer%>);
   inter = setInterval(function(){
     $("#timer").html(t);

@@ -1,50 +1,65 @@
-<style>
-  body {
-    background:black;
-    color:white;
-  }
-  .editable {
-    background:green;
-  }
-</style><h1>Admin Page</h1>
-<table border=1>
-  <tr>
-    <td> Select </td>
-    <td> Name </td>
-    <td> Email </td>
-    <td> Username </td>
-  </tr>
-  <% @user_all.each do |t| %>
+<h1>Admin Page</h1>
+<div id="userList">
+  <table border=1>
     <tr>
-      <td> <input type="radio" name="user" class="user-radio" data-username="<%= t.username %>" > </td>
-      <td><div data-name="name"><%= t.name %></div></td>
-      <td><div data-name="email"><%= t.email %></div></td>
-      <td><div data-name="username"><%= t.username %></div></td>
-    </tr> 
-  <% end %>
-</table>
-<form id="update-form" action="/admin_user_update" method="get">
-<input type="hidden" name="original-username">
-<input type="hidden" name="name">
-<input type="hidden" name="email">
-<input type="hidden" name="username">
-<input type="password" name="password" id="password" placeholder="Enter New Password" disabled>
-</form>
-<button id="add">Add User</button>
-<button id="edit">Edit</button>
-<button type="submit" form="update-form" id="submit" disabled="disabled">Submit</button>
-<button id="cancel" disabled="disabled">Cancel</button>
-<button id="delete" type="submit" form="delete-form"> Delete User</button>
-<form id="delete-form" method="get" action="/admin_user_delete">
-<input type="hidden" name="username" id="user-to-delete">
-</form>
-<form id="add-form" method="post" action="" style="display:none;">
-  <input type="email" placeholder="Email" name="email">
-  <input type="text" placeholder="Username" name="username">
-  <input type="text" placeholder="Name" name="name">
-  <input type="password" placeholder="Password" name="password">
-  <input type="submit">
-</form>
+      <th> Select </th>
+      <th> Name </th>
+      <th> Email </th>
+      <th> Username </th>
+    </tr>
+    <% @user_all.each do |t| %>
+      <tr>
+        <td> <input type="radio" name="user" class="user-radio" data-username="<%= t.username %>" > </td>
+        <td><div data-name="name"><%= t.name %></div></td>
+        <td><div data-name="email"><%= t.email %></div></td>
+        <td><div data-name="username"><%= t.username %></div></td>
+      </tr> 
+    <% end %>
+  </table>
+  <form id="update-form" action="/users/admin_user_update" method="get">
+  <input type="hidden" name="original-username">
+  <input type="hidden" name="name">
+  <input type="hidden" name="email">
+  <input type="hidden" name="username">
+  <input type="password" name="password" id="password" placeholder="Enter New Password" disabled>
+  </form>
+  <button id="add">Add User</button>
+  <button id="edit">Edit</button>
+  <button type="submit" form="update-form" id="submit" disabled="disabled">Submit</button>
+  <button id="cancel" disabled="disabled">Cancel</button>
+  <button id="delete" type="submit" form="delete-form"> Delete User</button>
+  <form id="delete-form" method="get" action="/users/admin_user_delete">
+  <input type="hidden" name="username" id="user-to-delete">
+  </form>
+  <form id="add-form" method="get" action="/users/admin_user_create" style="display:none;">
+    <input type="email" placeholder="Email" name="email">
+    <input type="text" placeholder="Username" name="username">
+    <input type="text" placeholder="Name" name="name">
+    <input type="password" placeholder="Password" name="password">
+    <input type="submit">
+  </form>
+</div>
+
+<div id="imageList">
+  <table border=1>
+    <tr>
+      <th>Select</th>
+      <th> Img </th>
+      <th> Photo </th>
+      <th> Tag </th>
+    </tr>
+    <% @final.each do |t| %>
+      <tr>
+        <td><input type="radio" name="image" class="image-radio" data-username="<%= t[0] %>"></td>
+        <td> <%= t[0] %> </td>
+        <td> <%= image_tag(t[0], :alt => "Error", height: '90', width: '90') %> </td>
+        <td> <%= t.slice(1, t.size-1).join(',') %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+
 <script>
   var current = new Array();
   $(function(){
@@ -78,7 +93,7 @@
       });
     });
     
-    $('#form').on('submit',function(){
+    $('#update-form').on('submit',function(){
       $('.editable').each(function(){
         var v = $(this).data('name');
         $('input[name='+v+']').val($(this).text());

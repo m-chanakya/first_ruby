@@ -5,12 +5,35 @@
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+<style>
+body {
+  background-image: url('http://www.hdwallpapersinn.com/wp-content/uploads/2014/07/city-wallpaper_1080p.jpg');
+  background-position:top;
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-attachment:fixed;
+}
+#user_nav {
+  background-color:rgba(200,175,150,0.75);
+  font-size:1.5em;
+  color:white;
+  text-align:right;
+  height:2.5em;
+  text-shadow:0 1px 1px black;
+}
+#user_nav:before {
+  content:"";
+  display:inline-block;
+  height:100%;
+  vertical-align:middle;
+}
+</style>
 </head>
 <body>
 
 <div id="user_nav">
   <% if current_user %>
-    Logged in as <%= current_user.email %>.
+  Welcome <%= current_user.name %>.
     <%= link_to "Log out", logout_path %>
   <% else %>
     <%= link_to "Sign up", signup_path %> or
