@@ -1,4 +1,12 @@
-<h1>Admin Page</h1>
+<style>
+  body {
+    background:black;
+    color:white;
+  }
+  .editable {
+    background:green;
+  }
+</style><h1>Admin Page</h1>
 <table border=1>
   <tr>
     <td> Select </td>
@@ -9,18 +17,25 @@
   <% @user_all.each do |t| %>
     <tr>
       <td> <input type="radio" name="user" class="user-radio" data-username="<%= t.username %>" > </td>
-      <td><div> <%= t.name %> </div></td>
-      <td><div> <%= t.email %> </div></td>
-      <td><div> <%= t.username %> </div></td>
+      <td><div data-name="name"><%= t.name %></div></td>
+      <td><div data-name="email"><%= t.email %></div></td>
+      <td><div data-name="username"><%= t.username %></div></td>
     </tr> 
   <% end %>
 </table>
+<form id="update-form"></form>
 <button id="add">Add User</button>
 <button id="edit">Edit</button>
-<button id="submit" disabled="disabled">Submit</button>
+<button type="submit" form="form" id="submit" disabled="disabled">Submit</button>
 <button id="cancel" disabled="disabled">Cancel</button>
 <button id="delete">Delete User</button>
+<form id="form" action="/admin_user_update" method="">
+<input type="hidden" name="name">
+<input type="hidden" name="email">
+<input type="hidden" name="username">
+</form>
 <script>
+  var current = new Array();
   $(function(){
     $('#edit').click(function(){
       var r = $('.user-radio:checked');
@@ -31,10 +46,29 @@
         $('button:disabled').removeAttr('disabled');
         $(this).attr('disabled','');
         var ctd = r.parent();
-        ctd.next().find('div')
+        var i = 0;
+        while (i < 3) {
+          current[i++] = ctd.next().find('div').attr('contentEditable','true').addClass('editable').html();
+          ctd = ctd.next();
+        }
+        $('.user-radio').attr('disabled','');
       }
     });
-    $('#cancel').click(function(){});
-    
+    $('#cancel').click(function(){
+      $('.user-radio').removeAttr('disabled');
+      $('#edit').removeAttr('disabled');
+      $('#cancel').attr('disabled','');
+      $('#submit').attr('disabled','');
+      $('.editable').each(function(){
+        $(this).html(current.shift()).removeAttr('contentEditable').removeClass('editable');
+      });
+    });
+    $('#form').on('submit',function(){
+      $('.editable').each(function(){
+        var v = $(this).data('name');
+        $('input[name='+v+']').val($(this).text());
+        console.log(v, $('input[name='+v+']').val());
+      });
+    });
   });
 </script>

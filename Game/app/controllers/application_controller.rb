@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
       @current_user ||= User.find(session[:user_id])
       return true	
     else
+      flash[:error] = "Must be logged in!!"
       redirect_to root_path
       return false
     end

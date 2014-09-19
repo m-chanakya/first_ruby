@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  before_filter :authenticate_user, :only => [:home]
+  before_filter :authenticate_user, :only => [:home, :play, :checkAns]
   before_filter :save_login_state, :only => [:create, :new]
   
   def new
@@ -23,40 +23,45 @@ class SessionsController < ApplicationController
     session[:user_id] = nil
     redirect_to root_url, :notice => "Logged Out!!"
   end
+    
+  def play
+    @timer = 10
+    if session["checker"] == nil
+      session["checker"] = 1
+    end
+    if session[:score ] == nil
+      session[:score] = 0
+    end
+    if session["checker"] == 1
+      tmp = Photos.getRandImg
+      sz = tmp.size
+      session["img1"] = tmp[rand(sz)]
+      session["img2"] = tmp[rand(sz)]
+      session["img3"] = tmp[rand(sz)]
+      session["img4"] = tmp[rand(sz)]
+      while session["img1"] == session["img2"]
+        session["img2"] = tmp[rand(sz)]
+      end
+      while session["img3"] == session["img2"] or session["img3"] == session["img1"]
+        session["img3"] = tmp[rand(sz)]
+      end
+      while session["img4"] == session["img3"] or session["img4"] == session["img2"] or session["img4"] == session["img1"]
+        session["img4"] = tmp[rand(sz)]
+      end
+    else
+      puts "chanu randi"
+    end
+  end
   
   def checkAns
     if Photos.chk(params["ans"])
       session[:score] = session[:score] + 3;
-      @checker = true
+      session["checker"] = 1
     else
       session[:score] = session[:score] - 1;
-      @checker = false
+      session["checker"] = 0
     end
     redirect_to :action => "play"
-  end
-  
-  def play
-    if session[:score ] == nil
-      session[:score] = 0
-    end
-    if @checker == true or @checker==nil
-      tmp = Photos.getRandImg
-      sz = tmp.size
-      @img1 = tmp[rand(sz)]
-      @img2 = tmp[rand(sz)]
-      @img3 = tmp[rand(sz)]
-      @img4 = tmp[rand(sz)]
-      while @img1 == @img2
-        @img2 = tmp[rand(sz)]
-      end
-      while @img3 == @img2 or @img3 == @img1
-        @img3 = tmp[rand(sz)]
-      end
-      while @img4 == @img3 or @img4 == @img2 or @img4 == @img1
-        @img4 = tmp[rand(sz)]
-      end
-      @checker = false
-    end
   end
   
 end
