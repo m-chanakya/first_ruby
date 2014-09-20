@@ -36,6 +36,9 @@ class SessionsController < ApplicationController
    end
   
   def play
+    if session["attempt"] == nil
+      session["attempt"] = 3
+    end
     if params["level"].present?
       session["level"] = params["level"]
     end
@@ -76,22 +79,24 @@ class SessionsController < ApplicationController
         session["img4"] = tmp[rand(sz)]
       end
     else
-      puts "chanu randi"
+      puts "not working"
     end
   end
   
   def checkAns
     if Images.chk(session, params["ans"])
-      session[:score] = session[:score] + 3;
+      session[:score] = session[:score] + 3
       session["checker"] = 1
     else
-      session[:score] = session[:score] - 1;
+      session[:score] = session[:score] - 1
       session["checker"] = 0
+      session["attempt"] = session["attempt"] - 1
     end
     redirect_to :action => "play"
   end
   
   def endGame
+    session["attempt"] = nil
     tmp = Board.new
     user = session["username"]
     tmp["uname"] = user
@@ -104,8 +109,12 @@ class SessionsController < ApplicationController
   def mail
     user = User.find_by username: session[:username]
     tmp = Board.order("score DESC").find_by uname: user.username
-    UserMail.challenge(params[:email], user, tmp)
-    redirect_to home_url, :notice => "Challenge Sent!!"
+    if tmp
+      UserMailer.challenge(params[:email], user, tmp).deliver
+      redirect_to home_url, :notice => "Challenge Sent!!"
+    else
+      redirect_to home_url, :notice => "High Score not found!!"
+    end
   end
   
 end

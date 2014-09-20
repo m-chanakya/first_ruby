@@ -81,6 +81,7 @@ span {
 <div id="level" class="circle">Level <%=params["level"]%> </div>
 <div id="score" class="circle">Score <%=session["score"]%></div>
 <div id="timer" class="circle"> <%=@timer%></div>
+<div id="attempts" class="circle"> Attempts <%=session["attempt"]%></div>
 </div>
 <div id="mainImgBlock">
   <div><!--
@@ -108,11 +109,12 @@ span {
       'height':$('#form-wrapper').width()+'px'
     });
   });
+  at = parseInt(<%=session["attempt"]%>)
   t = parseInt(<%=@timer%>);
   inter = setInterval(function(){
     $("#timer").html(t);
     t--;
-    if(t<=0)
+    if(t<=0 || at<=0)
     {
       window.location = '/sessions/endGame';
       clearInterval(inter);

@@ -1,4 +1,4 @@
-class UserMail < ActionMailer::Base
+class UserMailer < ActionMailer::Base
   default from: "ihateror@gmail.com"
 
   # Subject can be set in your I18n file at config/locales/en.yml

@@ -15,6 +15,8 @@ Rails.application.routes.draw do
   get "users/admin_user_create"
   get "users/admin_image_delete"
   post "users/admin_image_delete"
+  get "users/admin_image_update"
+  post "users/admin_image_update"
   post "users/admin_user_delete"
   post "users/admin_user_update"
   post "users/admin_user_create"
