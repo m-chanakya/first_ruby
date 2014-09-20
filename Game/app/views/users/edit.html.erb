@@ -1,3 +1,15 @@
+<nav id="sub-nav" class="navbar navbar-default">
+  <ul class="nav navbar-nav">
+    <li><a href="/home">Home</a></li>
+  <% if not fb? %>
+    <li class="active"><a href="/profile">Update Profile</a></li>
+  <% end %>
+  <% if admin? %>
+    <li><a  href = "/users/admin_page">Admin Page</a></li>
+  <% end %>
+  </ul>
+</nav>
+<br>
 <h1>Edit Profile</h1>
 
 <%= form_for @user do |f| %>

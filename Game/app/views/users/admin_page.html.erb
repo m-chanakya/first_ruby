@@ -180,9 +180,9 @@
         <td><input type="radio" name="image" class="image-radio" 
                    data-tags="<%= t.tags %>"
                    data-filename="<%= t.name %>"></td>
-        <td> <%= t.name %> </td>
+        <td> <div data-name="name"><%= t.name %></div> </td>
         <td> <%= image_tag(t.name, :alt => "Error", height: '90', width: '90') %> </td>
-        <td> <%= t.tags %></td>
+        <td> <div data-name="tags"><%= t.tags %></div></td>
       </tr>
     <% end %>
   </tbody>
@@ -206,6 +206,13 @@
   <form id="images-delete-form" method="get" action="/users/admin_image_delete" style="display:none;">
   <input type="hidden" name="original-name" id="filename-for-delete">
   <input type="hidden" name="original-tags" id="tags-for-delete">
+  </form>
+  
+  <form id="image-update-form" action="/users/admin_image_update" method="get">
+  <input type="hidden" name="original-name" id="filename-for-update">
+  <input type="hidden" name="original-tags" id="tags-for-update">
+  <input type="hidden" name="name" id="newname-for-update">
+  <input type="hidden" name="tags" id="newtags-for-update">
   </form>
 </div>
 </div>
@@ -248,6 +255,39 @@
         $(this).find('#filename-for-delete').val(r.data('filename'))
         $(this).find('#tags-for-delete').val(r.data('tags'))
       }
+    });
+    
+    var oldImageData = new Array();
+    $('#imageList #edit-image').click(function(){
+      var r = $('#imageList .user-radio:checked');
+      if (r.length == 0) {
+        alert('None selected');
+      }
+      else {
+        $('#imageList button:disabled').removeAttr('disabled');
+        $(this).attr('disabled','');
+        var ctd = r.parent();
+        var i = 0;
+        while (i < 2) {
+          var d = ctd.next().find('div');
+          if (d.length) {
+            oldImageData[i++] = d.attr('contentEditable','true').addClass('editable').html();
+          }
+          ctd = ctd.next();
+        }
+        $('#imageList .user-radio').attr('disabled','');
+      }
+    });
+    
+    $('#imageList #image-update-form').on('submit',function(){
+      $('#imageList .editable').each(function(){
+        var v = $(this).data('name');
+        $('#imageList #image-update-form input[name='+v+']').val($(this).text());
+      });
+      $('#userList input[name=original-name]')
+      .val($('#userList input[type=radio]:checked').data('filename'));
+      $('#userList input[name=original-tags]')
+      .val($('#userList input[type=radio]:checked').data('tags'));
     });
   });
 </script>

@@ -26,6 +26,8 @@ Rails.application.routes.draw do
   get "sessions/endGame"
   post "upload" => "users#upload"
   post "sessions/new"
+  post "sessions/mail"
+  get "sessions/mail"
   resources :users
   resources :sessions
   resource :profile

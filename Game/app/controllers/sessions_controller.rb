@@ -102,7 +102,9 @@ class SessionsController < ApplicationController
   end
   
   def mail
-    user_mail.challenge(params[:email])
+    user = User.find_by username: session[:username]
+    tmp = Board.order("score DESC").find_by uname: user.username
+    UserMail.challenge(params[:email], user, tmp)
     redirect_to home_url, :notice => "Challenge Sent!!"
   end
   
