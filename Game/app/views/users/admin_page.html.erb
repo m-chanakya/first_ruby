@@ -205,7 +205,7 @@
   
   <button id="add-image">Add Image</button>
   <button id="edit-image">Edit</button>
-  <button type="submit" form="image-update-form" disabled="disabled">Submit</button>
+  <button id="image-submit-btn" type="submit" form="image-update-form" disabled="disabled">Submit</button>
   <button id="cancel-image" disabled="disabled">Cancel</button>
   <button id="delete-image" type="submit" form="images-delete-form"> Delete Image</button>
   
@@ -306,11 +306,11 @@
     });
     $('#cancel-image').click(function(){
       $('#imageList .image-radio').removeAttr('disabled');
-      $('#imageList #edit').removeAttr('disabled');
-      $('#userList #cancel').attr('disabled','');
-      $('#userList #submit').attr('disabled','');
-      $('#userList .editable').each(function(){
-        $(this).html(current.shift()).removeAttr('contentEditable').removeClass('editable');
+      $('#imageList #edit-image').removeAttr('disabled');
+      $('#imageList #cancel-image').attr('disabled','');
+      $('#imageList #image-submit-btn').attr('disabled','');
+      $('#imageList .editable').each(function(){
+        $(this).html(oldImageData.shift()).removeAttr('contentEditable').removeClass('editable');
       });
     });
   });
