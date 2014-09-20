@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_filter :authenticate_user, :only => [:edit, :update]
+  before_filter :authenticate_user, :only => [:edit, :update, :delete]
   before_filter :save_login_state, :only => [:new, :create]
   before_filter :authorized?, :only => [:admin_page, :admin_user_update, :admin_user_delete, :admin_user_create, :upload, :admin_image_update, :admin_image_delete]
   
@@ -70,8 +70,9 @@ class UsersController < ApplicationController
   
   def admin_image_delete
     img = Images.find_by name: params["original-name"]
-    rmTags(params["tags"])
+    rmTags(params["original-tags"])
     File.delete(Rails.root.join('app', 'assets', 'images', params["original-name"]))
+    img.delete
     redirect_to "/users/admin_page#images"
   end
   
@@ -121,31 +122,43 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      redirect_to root_url, :notice => "Signed up!"
+      redirect_to login_url, :notice => "Signed up!"
     else
       render "new"
     end
   end
   
   def edit
-    @user = User.find(session[:user_id])
+    if session[:fb]
+      redirect_to home_url, :notice => "Not for FB users"
+    else
+      @user = User.find(session[:user_id])
+    end
   end
 
   def update
-    @user = User.find(session[:user_id])
-    if @user.update_attributes(user_params)
-      flash[:success] = "Account updated"
-      redirect_to home_url
+    if session[:fb]
+      redirect_to home_url, :notice => "Not for FB users"
     else
-      render 'edit'
+      @user = User.find(session[:user_id])
+      if @user.update_attributes(user_params)
+        flash[:success] = "Account updated"
+        redirect_to home_url
+      else
+        render 'edit'
+      end
     end
   end
   
   def delete
-    user = User.find(session[:user_id])
-    session[:user_id] = nil
-    user.delete
-    redirect_to root_url, :notice => "User Deleted!"
+    if session[:fb]
+      redirect_to home_url, :notice => "Not for FB users"
+    else
+      user = User.find(session[:user_id])
+      session[:user_id] = nil
+      user.delete
+      redirect_to home_url, :notice => "User Deleted!"
+    end
   end
   
   private

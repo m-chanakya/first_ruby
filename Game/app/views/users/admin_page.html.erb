@@ -1,11 +1,13 @@
 <style>
-  #page-selector {
-    text-align:center;
-  }
-  .wrappers {
+#page-selector {
+  text-align:center;
+}
+
+.wrappers {
   margin-top:20px;
   text-align:center;
 }
+
 .wrappers > div {
   display: inline-block;
   background-color:rgba(200, 175, 150, 0.75);
@@ -13,16 +15,19 @@
   border-radius:100%;
   transition:all 1s;
 }
-  .editable, .editable:active {
+.editable, .editable:active {
   outline: none !important;
 }
+
 .editable {
   border: 1px solid grey;
   padding:2px 5px;
 }
+
 .editable:active, .editable:focus {
   background-color: white;
 }
+
 </style>
 <div class="page-header">
 <h1>Admin Page</h1>
@@ -46,22 +51,22 @@
       var b = $('.btn-default');
       a.removeClass('btn-primary').addClass('btn-default');
       b.removeClass('btn-default').addClass('btn-primary');
-      
     }
   });
 </script>
+
 <div id="userList-wrapper" class="wrappers">
-<div id="userList">
+ <div id="userList">
   <table class="table table-hover">
-    <thead>
+   <thead>
     <tr>
       <th> Select </th>
       <th> Name </th>
       <th> Email </th>
       <th> Username </th>
     </tr>
-    </thead>
-    <tbody>
+   </thead>
+   <tbody>
     <% @user_all.each do |t| %>
       <tr>
         <td> <input type="radio" name="user" class="user-radio" data-username="<%= t.username %>" > </td>
@@ -70,23 +75,27 @@
         <td><div data-name="username"><%= t.username %></div></td>
       </tr> 
     <% end %>
-      </tbody>
+   </tbody>
   </table>
-  <form id="update-form" action="/users/admin_user_update" method="get">
+  
+  <form id="users-update-form" action="/users/admin_user_update" method="get">
   <input type="hidden" name="original-username">
   <input type="hidden" name="name">
   <input type="hidden" name="email">
   <input type="hidden" name="username">
   <input type="password" name="password" id="password" placeholder="Enter New Password" disabled>
   </form>
+
   <button id="add">Add User</button>
   <button id="edit">Edit</button>
-  <button type="submit" form="update-form" id="submit" disabled="disabled">Submit</button>
+  <button type="submit" form="users-update-form" id="submit" disabled="disabled">Submit</button>
   <button id="cancel" disabled="disabled">Cancel</button>
-  <button id="delete" type="submit" form="delete-form"> Delete User</button>
-  <form id="delete-form" method="get" action="/users/admin_user_delete">
+  <button id="delete" type="submit" form="users-delete-form"> Delete User</button>
+  
+  <form id="users-delete-form" method="get" action="/users/admin_user_delete">
   <input type="hidden" name="username" id="user-to-delete">
   </form>
+  
   <form id="add-form" method="get" action="/users/admin_user_create" style="display:none;">
     <input type="email" placeholder="Email" name="email">
     <input type="text" placeholder="Username" name="username">
@@ -100,13 +109,13 @@
   var current = new Array();
   $(function(){
     
-    $('#edit').click(function(){
-      var r = $('.user-radio:checked');
+    $('#userList #edit').click(function(){
+      var r = $('#userList .user-radio:checked');
       if (r.length == 0) {
         alert('None selected');
       }
       else {
-        $('button:disabled').removeAttr('disabled');
+        $('#userList button:disabled').removeAttr('disabled');
         $(this).attr('disabled','');
         var ctd = r.parent();
         var i = 0;
@@ -114,44 +123,42 @@
           current[i++] = ctd.next().find('div').attr('contentEditable','true').addClass('editable').html();
           ctd = ctd.next();
         }
-        $('.user-radio').attr('disabled','');
-        $('#password').removeAttr('disabled');
+        $('#userList .user-radio').attr('disabled','');
+        $('#userList #password').removeAttr('disabled');
       }
     });
     
-    $('#cancel').click(function(){
-      $('.user-radio').removeAttr('disabled');
-      $('#edit').removeAttr('disabled');
-      $('#cancel').attr('disabled','');
-      $('#submit').attr('disabled','');
-      $('.editable').each(function(){
+    $('#userList #cancel').click(function(){
+      $('#userList .user-radio').removeAttr('disabled');
+      $('#userList #edit').removeAttr('disabled');
+      $('#userList #cancel').attr('disabled','');
+      $('#userList #submit').attr('disabled','');
+      $('#userList .editable').each(function(){
         $(this).html(current.shift()).removeAttr('contentEditable').removeClass('editable');
       });
     });
     
-    $('#update-form').on('submit',function(){
-      $('.editable').each(function(){
+    $('#userList #users-update-form').on('submit',function(){
+      $('#userList .editable').each(function(){
         var v = $(this).data('name');
-        $('input[name='+v+']').val($(this).text());
-        console.log(v, $('input[name='+v+']').val());
+        $('#userList input[name='+v+']').val($(this).text());
       });
-      alert($('input[type=radio]:checked').data('username'));
-      $('input[name=original-username]').val($('input[type=radio]:checked').data('username'));
+      $('#userList input[name=original-username]').val($('#userList input[type=radio]:checked').data('username'));
     });
     
-    $('#delete-form').on('submit', function(){
-      var r = $('.user-radio:checked');
+    $('#userList #users-delete-form').on('submit', function(){
+      var r = $('#userList .user-radio:checked');
       if (r.length == 0) {
         alert('None selected');
         return false;
       }
       else {
-        $('#user-to-delete').val( $('input[type=radio]:checked').data('username') );
+        $('#userList #user-to-delete').val( $('#userList input[type=radio]:checked').data('username') );
       }
     });
     
-    $('#add').click(function(){
-      $('#add-form').show();
+    $('#userList #add').click(function(){
+      $('#userList #add-form').show(1000);
     });
     
   });
@@ -170,7 +177,9 @@
     <tbody>
     <% @image_all.each do |t| %>
       <tr>
-        <td><input type="radio" name="image" class="image-radio" data-username="<%= t[0] %>"></td>
+        <td><input type="radio" name="image" class="image-radio" 
+                   data-tags="<%= t.tags %>"
+                   data-filename="<%= t.name %>"></td>
         <td> <%= t.name %> </td>
         <td> <%= image_tag(t.name, :alt => "Error", height: '90', width: '90') %> </td>
         <td> <%= t.tags %></td>
@@ -178,18 +187,67 @@
     <% end %>
   </tbody>
   </table>
-  <%= form_tag({action: :upload}, multipart: true) do %>
-    <%= file_field_tag 'picture' %>
-    <label>Tags:
-    <%= text_field_tag 'tags' %>
-    </label>
-  <p class="button"><%= submit_tag "Upload" %></p>
-  <% end %>
+  
+  <button id="add-image">Add Image</button>
+  <button id="edit-image">Edit</button>
+  <button type="submit" disabled="disabled">Submit</button>
+  <button id="cancel-image" disabled="disabled">Cancel</button>
+  <button id="delete-image" type="submit" form="images-delete-form"> Delete Image</button>
+  
+  
+  <div id="images-add-image-form-wrapper" style="display:none;">
+    <%= form_tag({action: :upload}, multipart: true, id: 'add-image-form') do %>
+      <%= file_field_tag 'picture' %>
+      <%= text_field_tag 'tags' %>
+    <%= submit_tag "Upload" %>
+    <% end %>
+  </div>
+  
+  <form id="images-delete-form" method="get" action="/users/admin_image_delete" style="display:none;">
+  <input type="hidden" name="original-name" id="filename-for-delete">
+  <input type="hidden" name="original-tags" id="tags-for-delete">
+  </form>
 </div>
 </div>
 <script>
-  $('input[type=radio]').change(function(){
-    $('tr.warning').removeClass('warning');
-    $(this).closest('tr').addClass('warning');
+  $(function(){
+    $('input[type=radio]').change(function(){
+      $('tr.warning').removeClass('warning');
+      $(this).closest('tr').addClass('warning');
+    });
+    $('#imageList input[name=tags]').attr('placeholder','Tags for Images');
+    $('#imageList input').attr('required', 'required');
+    $('#imageList input[type=file]').attr('accept','image/*');
+    
+    $('#imageList #add-image').click(function(){ $( '#images-add-image-form-wrapper' ).show(500) });
+    
+    $('#add-image-form').on('submit',function(){
+      var $tags = $('#add-image-form input[name=tags]');
+      var tagsArray = $tags.val().split(',');
+      var spaces = false;
+      for(var i=0; i<tagsArray.length; i++) {
+        tagsArray[i] = tagsArray[i].trim();
+        if (tagsArray[i].indexOf(' ') != -1) {
+          spaces = true;
+        }
+      }
+      if (spaces) {
+        alert('Tags should not contain spaces. It should be one word');
+        return false;
+      }
+      alert("Are you sure you wants tags "+$tags.val(tagsArray.join()).val()+"?");
+    });
+    
+    $('#images-delete-form').on('submit',function(){
+      var r = $('#imageList .image-radio:checked');
+      if (r.length == 0) {
+        alert('None selected');
+        return false;
+      }
+      else {
+        $(this).find('#filename-for-delete').val(r.data('filename'))
+        $(this).find('#tags-for-delete').val(r.data('tags'))
+      }
+    });
   });
 </script>

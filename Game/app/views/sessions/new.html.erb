@@ -9,7 +9,13 @@
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
-      testAPI();
+      <% if session[:fb] %>
+        testAPI();
+      <% else %>
+        FB.logout(function(response) {
+        // user is now logged out
+        });  
+      <% end %>
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
       document.getElementById('status').innerHTML = 'Please log ' +
@@ -73,12 +79,16 @@
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name);
+      $('#insert_form').html('<form action="/sessions/fb_login" id="fb" method="get" style="display:none;"><input type="text" name="username" value="' + response.name + '" /><input type="text" name="usermail" value="' + response.email + '" /></form>');
+    document.forms['fb'].submit();
       document.getElementById('status').innerHTML =
         'Thanks for logging in, ' + response.name + '!';
     });
   }
 </script>
 
+  
+  
 <style>
   .outer {
     position:absolute;
@@ -120,8 +130,18 @@
     </fb:login-button>
     <div id="status">
     </div>
+    <div
+      class="fb-like"
+      data-share="true"
+      data-width="450"
+        data-show-faces="true">
+      </div>
   </div>
 </div>
+<script>
+  $("#u_0_3").hide();
+</script>
+<div id="insert_form"></div>
 <script>
   $(function(){
     $('input[type=submit]').addClass('btn').addClass('btn-primary');

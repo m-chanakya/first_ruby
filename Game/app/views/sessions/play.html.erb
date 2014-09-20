@@ -83,16 +83,6 @@ span {
 <div id="timer" class="circle"> <%=@timer%></div>
 </div>
 <div id="mainImgBlock">
-  <div>
-    <table>
-      <% @lBoard.each do |t|%>
-      <tr>
-        <td><%= t.uname %></td>
-        <td><%= t.score %></td>
-      </tr>
-      <%end%>
-    </table>
-  </div>
   <div><!--
   --><div><%= image_tag(session["img1"], :alt => "Error", height: '100', width: '100') %></div><!--
   --><div><%= image_tag(session["img2"], :alt => "Error", height: '100', width: '100') %></div><!--

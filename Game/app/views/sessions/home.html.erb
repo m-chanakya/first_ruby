@@ -8,12 +8,17 @@
   background: green;
 }
 </style>
-<div id="sub-nav">
-<a href = "/profile">Update Profile</a>
-  <% if admin? %>
-    <a href = "/users/admin_page">Admin Page</a>
+<nav id="sub-nav" class="navbar navbar-default">
+  <ul class="nav navbar-nav">
+    <li><a href="#">Home</a></li>
+  <% if not fb? %>
+    <li><a href = "/profile">Update Profile</a></li>
   <% end %>
-</div>
+  <% if admin? %>
+    <li><a  href = "/users/admin_page">Admin Page</a></li>
+  <% end %>
+  </ul>
+</nav>
 
 <form action="/sessions/play">
   Choose level:
@@ -24,3 +29,20 @@
   </select>
   <input type="submit" value="Start Game" />
 </form>
+<div>
+  <table>
+    <% @lBoard.each do |t|%>
+    <tr>
+      <td><%= t.uname %></td>
+      <td><%= t.score %></td>
+    </tr>
+    <%end%>
+  </table>
+</div>
+<div id="challenge">
+  <h3>Challenge your friends</h3>
+  <form action="/sessions/mail" method="post">
+    <input type="email" name="email" placeholder="Enter email Id">
+    <input type="submit" value="Send request!">
+  </form>
+</div>

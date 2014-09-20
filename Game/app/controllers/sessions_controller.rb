@@ -1,14 +1,23 @@
 class SessionsController < ApplicationController
-  before_filter :authenticate_user, :only => [:home, :play, :checkAns]
+  before_filter :authenticate_user, :only => [:home, :play, :checkAns, :mail]
   before_filter :save_login_state, :only => [:create, :new]
   
   def new
   end
   
+  def fb_login
+    session[:fb] = true
+    session[:username] = params[:username]
+    session[:email] = params[:usermail]
+    redirect_to home_url
+  end
+  
   def create
     user = User.authenticate(params[:email], params[:password])
     if user
+      session[:fb] = false
       session[:user_id] = user.id
+      session[:username] = user.username
       redirect_to home_url, :notice => "Logged In!!"
     else
       flash.now.alert = "Invalid email or password"
@@ -17,20 +26,20 @@ class SessionsController < ApplicationController
   end
   
   def home
+     @lBoard = Board.order("score DESC").limit(10)
   end
   
   def destroy
     session[:user_id] = nil
     reset_session
     redirect_to login_url, :notice => "Logged Out!!"
-  end
-    
+   end
+  
   def play
     if params["level"].present?
       session["level"] = params["level"]
     end
     @timer = 20 - ((session["level"].to_i) - 1)*5
-    @lBoard = Board.order("score DESC").limit(10)
     if session["checker"] == nil
       session["checker"] = 1
     end
@@ -89,7 +98,12 @@ class SessionsController < ApplicationController
     tmp["score"] = session[:score].to_i
     tmp.save
     session[:score] = 0
-    redirect_to root_url, :notice => "Game Over!!"
+    redirect_to home_url, :notice => "Game Over!!"
+  end
+  
+  def mail
+    user_mail.challenge(params[:email])
+    redirect_to home_url, :notice => "Challenge Sent!!"
   end
   
 end
