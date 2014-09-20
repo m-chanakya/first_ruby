@@ -10,7 +10,7 @@
 </style>
 <div id="sub-nav">
 <a href = "/profile">Update Profile</a>
-  <% if :admin? == true %>
+  <% if admin? %>
     <a href = "/users/admin_page">Admin Page</a>
   <% end %>
 </div>

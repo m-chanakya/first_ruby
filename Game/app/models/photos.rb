@@ -1,5 +1,4 @@
 class Photos < ActiveRecord::Base
-  @currTag
   def self.getRandImg
     n = Photos.count
     xx = rand(n)+1

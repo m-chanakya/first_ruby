@@ -1,12 +1,67 @@
+<style>
+  #page-selector {
+    text-align:center;
+  }
+  .wrappers {
+  margin-top:20px;
+  text-align:center;
+}
+.wrappers > div {
+  display: inline-block;
+  background-color:rgba(200, 175, 150, 0.75);
+  padding:200px;
+  border-radius:100%;
+  transition:all 1s;
+}
+  .editable, .editable:active {
+  outline: none !important;
+}
+.editable {
+  border: 1px solid grey;
+  padding:2px 5px;
+}
+.editable:active, .editable:focus {
+  background-color: white;
+}
+</style>
+<div class="page-header">
 <h1>Admin Page</h1>
+</div>
+<div id="page-selector">
+  <button data-div="#userList-wrapper" type="button" class="btn btn-primary btn-lg">Users</button>
+  <button data-div="#imageList-wrapper" type="button" class="btn btn-default btn-lg">Images</button>
+</div>
+<script>
+  $(function(){
+    $('#page-selector button').click(function(){
+      $('#page-selector button').removeClass('btn-primary');
+      $(this).addClass('btn-primary');
+      $('.wrappers').fadeOut(500);
+      $( $(this).data('div') ).delay(500).fadeIn(500);
+    });
+    if (window.location.hash == "#images") {
+      $('#userList-wrapper').hide();
+      $('#imageList-wrapper').show();
+      var a = $('.btn-primary');
+      var b = $('.btn-default');
+      a.removeClass('btn-primary').addClass('btn-default');
+      b.removeClass('btn-default').addClass('btn-primary');
+      
+    }
+  });
+</script>
+<div id="userList-wrapper" class="wrappers">
 <div id="userList">
-  <table border=1>
+  <table class="table table-hover">
+    <thead>
     <tr>
       <th> Select </th>
       <th> Name </th>
       <th> Email </th>
       <th> Username </th>
     </tr>
+    </thead>
+    <tbody>
     <% @user_all.each do |t| %>
       <tr>
         <td> <input type="radio" name="user" class="user-radio" data-username="<%= t.username %>" > </td>
@@ -15,6 +70,7 @@
         <td><div data-name="username"><%= t.username %></div></td>
       </tr> 
     <% end %>
+      </tbody>
   </table>
   <form id="update-form" action="/users/admin_user_update" method="get">
   <input type="hidden" name="original-username">
@@ -39,27 +95,7 @@
     <input type="submit">
   </form>
 </div>
-
-<div id="imageList">
-  <table border=1>
-    <tr>
-      <th>Select</th>
-      <th> Img </th>
-      <th> Photo </th>
-      <th> Tag </th>
-    </tr>
-    <% @final.each do |t| %>
-      <tr>
-        <td><input type="radio" name="image" class="image-radio" data-username="<%= t[0] %>"></td>
-        <td> <%= t[0] %> </td>
-        <td> <%= image_tag(t[0], :alt => "Error", height: '90', width: '90') %> </td>
-        <td> <%= t.slice(1, t.size-1).join(',') %></td>
-      </tr>
-    <% end %>
-  </table>
 </div>
-
-
 <script>
   var current = new Array();
   $(function(){
@@ -118,5 +154,42 @@
       $('#add-form').show();
     });
     
+  });
+</script>
+<div id="imageList-wrapper"  class="wrappers" style="display:none">
+<div id="imageList">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th>Select</th>
+      <th> Name </th>
+      <th> Photo </th>
+      <th> Tags </th>
+    </tr>
+      </thead>
+    <tbody>
+    <% @image_all.each do |t| %>
+      <tr>
+        <td><input type="radio" name="image" class="image-radio" data-username="<%= t[0] %>"></td>
+        <td> <%= t.name %> </td>
+        <td> <%= image_tag(t.name, :alt => "Error", height: '90', width: '90') %> </td>
+        <td> <%= t.tags %></td>
+      </tr>
+    <% end %>
+  </tbody>
+  </table>
+  <%= form_tag({action: :upload}, multipart: true) do %>
+    <%= file_field_tag 'picture' %>
+    <label>Tags:
+    <%= text_field_tag 'tags' %>
+    </label>
+  <p class="button"><%= submit_tag "Upload" %></p>
+  <% end %>
+</div>
+</div>
+<script>
+  $('input[type=radio]').change(function(){
+    $('tr.warning').removeClass('warning');
+    $(this).closest('tr').addClass('warning');
   });
 </script>

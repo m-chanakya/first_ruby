@@ -26,7 +26,11 @@ class SessionsController < ApplicationController
   end
     
   def play
-    @timer = 20 - ((params["level"].to_i) - 1)*5
+    if params["level"].present?
+      session["level"] = params["level"]
+    end
+    @timer = 20 - ((session["level"].to_i) - 1)*5
+    @lBoard = Board.order("score DESC").limit(10)
     if session["checker"] == nil
       session["checker"] = 1
     end
@@ -34,15 +38,23 @@ class SessionsController < ApplicationController
       session[:score] = 0
     end
     if session["checker"] == 1
+      count = 0
       while true
-        tmp = Photos.getRandImg
+        tmpTag = Tags.getRandTag
+        session["currTag"] = tmpTag
+        tmp = Images.getRandImg(tmpTag)
+        puts tmp
         sz = tmp.size
         session["img1"] = tmp[rand(sz)]
         session["img2"] = tmp[rand(sz)]
         session["img3"] = tmp[rand(sz)]
         session["img4"] = tmp[rand(sz)]
+        count = count + 1
         if sz>=4
           break
+        end
+        if count > 1500000
+          redirect_to home_url, :notice => "Not Enough Images"
         end
       end
       while session["img1"]== session["img2"]
@@ -60,7 +72,7 @@ class SessionsController < ApplicationController
   end
   
   def checkAns
-    if Photos.chk(params["ans"])
+    if Images.chk(session, params["ans"])
       session[:score] = session[:score] + 3;
       session["checker"] = 1
     else
@@ -71,6 +83,12 @@ class SessionsController < ApplicationController
   end
   
   def endGame
+    tmp = Board.new
+    user = session["username"]
+    tmp["uname"] = user
+    tmp["score"] = session[:score].to_i
+    tmp.save
+    session[:score] = 0
     redirect_to root_url, :notice => "Game Over!!"
   end
   

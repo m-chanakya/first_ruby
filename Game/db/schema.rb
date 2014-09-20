@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140919165001) do
+ActiveRecord::Schema.define(version: 20140919232758) do
 
   create_table "boards", force: true do |t|
     t.string   "uname"
@@ -20,9 +20,23 @@ ActiveRecord::Schema.define(version: 20140919165001) do
     t.datetime "updated_at"
   end
 
+  create_table "images", force: true do |t|
+    t.string   "name"
+    t.string   "tags"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "photos", force: true do |t|
     t.string   "tags"
     t.string   "files"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tags", force: true do |t|
+    t.string   "tag"
+    t.integer  "freq"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   end
   
   def admin?
-    user = User.find(session[:user_id])
+    user = User.find(session[:user_id]) if session[:user_id]
     if user.email == "admin@gmail.com" and user.username = "Admin"
       return true
     else
@@ -21,7 +21,6 @@ class ApplicationController < ActionController::Base
   protected 
   def authenticate_user
     if session[:user_id]
-     # set current user object to @current_user object variable
       @current_user ||= User.find(session[:user_id])
       return true	
     else
